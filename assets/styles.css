@@ -1,0 +1,88 @@
+html {
+    font-family: sans-serif;
+    background-color: whitesmoke;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10;
+    flex-direction: column;
+}
+
+.form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.form * {
+    margin: 6px;
+    width: 500%;
+}
+
+.notes_container {
+    margin-top: 15px;
+}
+
+.note {
+    background-color: #e4ebf1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 14px;
+    position: relative;
+    box-shadow: 8px 8px 10px -5px rgba(34, 60, 80, 0.4), -9px -9px 10px -5px rgb(255, 255, 255);
+    max-width: 500px;
+    min-width: 300px;
+}
+
+.note_name {
+    font-size: 20px;
+    color: #402caf;
+    margin: 4px;
+}
+
+.note_description {
+    color: #161616;
+    opacity: 89%;
+}
+
+.delete {
+    top: 0;
+    right: 3px;
+    position: absolute;
+    color: #402caf;
+}
+
+.form_input {
+    border-radius: 9px;
+    border: none;
+    padding: 4px;
+    background-color: #e4ebf1;
+    box-shadow: -5px -4px 6px -5px #ffffff inset, 5px 5px 10px -11px rgba(34, 60, 80, 0.59) inset;
+    color: #161616;
+}
+
+.btn {
+    color: #161616;
+    border: none;
+    padding: 8px;
+    border-radius: 9px;
+    background-color: #e4ebf1;
+    box-shadow: 8px 8px 10px -5px rgba(34, 60, 80, 0.4), -9px -9px 10px -5px rgb(255, 255, 255);
+    transition: all .3s ease-in-out;
+    width: 100%;
+}
+
+.btn:hover {
+    color: #402caf;
+    cursor: pointer;
+    box-shadow: 8px 8px 10px -5px rgb(255, 255, 255), -9px -9px 10px -5px rgba(34, 60, 80, 0.2);
+}
+
+.error_container {
+    color: red;
+}
