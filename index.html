@@ -5,6 +5,7 @@
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="assets/normalize.css">
     <script src="script.js" defer></script>
@@ -18,13 +19,18 @@
         </div>
         <div class="form">
             <label for="name">
-                Название заметки
+                Название
             </label>
-            <input id="name" type="text" class="form_input" placeholder="Введите название заметки" />
+            <input id="name" type="text" class="form_input" placeholder="Введите название" />
             <label for="description">
-                Содержание заметки
+                Содержание
             </label>
-            <input id="description" type="text" class="form_input" placeholder="Введите содержание заметки" />
+            <input id="description" type="text" class="form_input toDo" placeholder="Что будете делать" />
+            <div class="add_input">
+                <span class="material-icons">
+                    add_circle_outline
+                </span>
+            </div>
             <button id="add_note" class="btn">
                 Добавить
             </button>
@@ -33,6 +39,8 @@
         <div class="notes_container">
 
         </div>
+
+    </div>
     </div>
 </body>
 
