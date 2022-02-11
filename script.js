@@ -1,6 +1,7 @@
 let name = ""
 let description = ""
-let notes = [] //объялвем переменные
+let notes = []
+let toDo = [] //объялвем переменные
 
 function validate(value) { //функция валидации
     let error = document.querySelector(".error_container") //локальная переменная error 
@@ -25,25 +26,66 @@ function validate(value) { //функция валидации
 function printNotes() {
     let toDisplay = ""
     for (let i in notes) {
+        let toDoString = ""
+        for (let j in notes[i].toDo) {
+            if (notes[i].toDo[j].done) {
+                toDoString +=
+
+                    `
+                <li>
+                    <div class="checkbox">
+                        <span class="material-icons uncheck undisplay">
+                            radio_button_unchecked
+
+                        </span>
+                        <span class="material-icons check">
+                            task_alt
+                        </span>
+                    </div>
+                    
+                    <p> ${notes[i].toDo[j].value} </p>
+                </li>
+                `
+            } else {
+                toDoString +=
+                    `
+                <li>
+                    <div data-note="${i}" data-task="${j}" class="checkbox">
+                        <span class="material-icons check">
+                            radio_button_unchecked
+                        </span>
+                        <span class="material-icons uncheck undisplay">
+                            task_alt
+                        </span>
+                    </div>
+                    
+                    <p> ${notes[i].toDo[j].value} </p>
+                </li>
+                `
+            }
+
+        }
+
         toDisplay +=
             `
             <div class="note">
-            <div class="delete">
-            x
+                <div class="delete">
+                    <span class="material-icons">
+                        close
+                    </span>
+                </div>
+                <div class="note_name">
+                    ${notes[i].name}
+                </div>
+                <ul class="note_description">   
+                    ${toDoString}
+                </ul>
             </div>
-            <div class="note_name">
-            ${notes[i].name}
-            </div>
-            <div class="note_description">   
-            ${notes[i].descr}
-            </div>
-        </div>
         `
     }
     document.querySelector('.notes_container').innerHTML = toDisplay
     let deleteButtons = document.getElementsByClassName("delete")
     for (let i in [...deleteButtons]) {
-        console.log(deleteButtons[i]);
         deleteButtons[i].addEventListener("click", () => {
             deleteNote(i)
         })
@@ -69,6 +111,29 @@ function deleteNote(index) {
     printNotes()
 }
 
+function deleteInputs() {
+    let inputs = document.querySelectorAll(".toDo")
+    for (let i in inputs) {
+        if (i != 0) {
+            try {
+                inputs[i].parentNode.removeChild(inputs[i])
+            } catch {
+                console.log()
+            }
+        }
+    }
+}
+
+function addInput() {
+    let elem = document.createElement("input")
+    elem.type = "text"
+    elem.classList = "form_input toDo"
+    elem.placeholder = "Что еще будете делать"
+    document.querySelector(".form").insertBefore(
+        elem,
+        document.querySelector(".add_input"))
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     if (getFromLocale("notes")) {
         notes = getFromLocale("notes")
@@ -77,19 +142,29 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.querySelector("#add_note").addEventListener("click", () => {
         name = document.querySelector("#name").value
-        description = document.querySelector("#description").value
+        let toDoElem = document.querySelectorAll(".toDo")
+        toDo = []
+        for (let i of toDoElem) {
+            toDo.push({
+                value: i.value,
+                done: false
+            })
+        }
         if (validate(name)) {
             notes.push({
                 name: name,
-                descr: description,
+                toDo: toDo,
             })
+
             saveToLocale("notes", notes)
+            deleteInputs()
             printNotes()
         }
-        console.log(notes)
         document.querySelector("#name").value = ""
         document.querySelector("#description").value = ""
     })
 
-
+    document.querySelector(".add_input").addEventListener("click", function() {
+        addInput()
+    })
 })
