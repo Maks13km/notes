@@ -3,11 +3,15 @@ html {
     background-color: whitesmoke;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10;
+    padding: 10px;
     flex-direction: column;
 }
 
@@ -16,11 +20,23 @@ html {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    width: 80%;
 }
 
 .form * {
     margin: 6px;
-    width: 500%;
+    width: 100%;
+}
+
+.add_input {
+    width: auto;
+    color: #363636;
+    transition: all .2s ease-in;
+}
+
+.add_input:hover {
+    transform: scale(1.2);
+    color: #402caf;
 }
 
 .notes_container {
@@ -55,26 +71,31 @@ html {
     right: 3px;
     position: absolute;
     color: #402caf;
+    cursor: pointer;
+    transition: all .2s ease-in;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .form_input {
     border-radius: 9px;
     border: none;
-    padding: 4px;
+    padding: 10px;
     background-color: #e4ebf1;
     box-shadow: -5px -4px 6px -5px #ffffff inset, 5px 5px 10px -11px rgba(34, 60, 80, 0.59) inset;
     color: #161616;
 }
 
 .btn {
-    color: #161616;
+    color: #363636;
     border: none;
     padding: 8px;
     border-radius: 9px;
     background-color: #e4ebf1;
     box-shadow: 8px 8px 10px -5px rgba(34, 60, 80, 0.4), -9px -9px 10px -5px rgb(255, 255, 255);
     transition: all .3s ease-in-out;
-    width: 100%;
+    width: fit-content;
 }
 
 .btn:hover {
@@ -85,4 +106,28 @@ html {
 
 .error_container {
     color: red;
+}
+
+label {
+    text-align: center;
+}
+
+.form_input:focus {
+    outline: none;
+}
+
+.delete:hover {
+    transform: rotate(180deg) scale(120%);
+}
+
+li {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ul {
+    margin-left: 0;
+    padding-left: 0;
 }
