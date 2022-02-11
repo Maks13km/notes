@@ -2,45 +2,58 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/styles.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css">
-    <link rel="stylesheet" href="assets/normalize.css">
-    <script src="script.js" defer></script>
+    <script src="script.js" defer>
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 
 <body>
     <div class="container">
-        <div class="error_container">
-        </div>
+
         <div class="form">
-            <label for="name">
-                Название
-            </label>
-            <input id="name" type="text" class="form_input" placeholder="Введите название" />
-            <label for="description">
-                Содержание
-            </label>
+
             <input id="description" type="text" class="form_input toDo" placeholder="Что будете делать" />
-            <div class="add_input">
-                <span class="material-icons">
+            <select size="auto">
+                <option>High</option>
+                <option>Medium</option>
+                <option>Low</option>
+                </select>
+            <span class="material-icons">
                     add_circle_outline
                 </span>
+            <div class="add_input">
+                <input type="checkbox" name="completed">
+                <label for="completed">
+                    Completed
+                </label>
+                <input type="checkbox" name="High">
+                <label for="High">
+                    High
+                </label>
+                <input type="checkbox" name="Medium">
+                <label for="Medium">
+                    Medium
+                </label>
+                <input type="checkbox" value="Low">
+                <label for="Low">
+                    Low
+                </label>
+
             </div>
-            <button id="add_note" class="btn">
+            <!-- <button id="add_note" class="btn">
                 Добавить
-            </button>
+            </button> -->
+
+            <div class="notes_container">
+
+            </div>
 
         </div>
-        <div class="notes_container">
-
-        </div>
-
-    </div>
     </div>
 </body>
 
