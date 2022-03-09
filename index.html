@@ -18,14 +18,14 @@
         <div class="form">
 
             <input id="description" type="text" class="form_input toDo" placeholder="Что будете делать" />
-            <select size="auto">
-                <option>High</option>
-                <option>Medium</option>
-                <option>Low</option>
-                </select>
-            <span class="material-icons">
-                    add_circle_outline
-                </span>
+            <select size="auto" class="priority">
+                <option value="3">High</option>
+                <option value ="2">Medium</option>
+                <option value="1">Low</option>
+            </select>
+            <span class="material-icons addCircle">
+                add_circle_outline
+            </span>
             <div class="add_input">
                 <input type="checkbox" name="completed">
                 <label for="completed">
@@ -43,17 +43,13 @@
                 <label for="Low">
                     Low
                 </label>
-
             </div>
-            <!-- <button id="add_note" class="btn">
-                Добавить
-            </button> -->
-
             <div class="notes_container">
-
             </div>
-
+            <div class="error_container">
+            </div>
         </div>
+    </div>
     </div>
 </body>
 
