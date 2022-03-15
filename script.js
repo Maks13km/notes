@@ -3,10 +3,11 @@ let toDo = {}
 let priority = "3"
 let toDisplay = ""
 let description = ""
-let sort = ""
+let sort1 = ""
+let sort2 = ""
 
 function validate(description) { //функция валидации
-    console.log(description.trim()) //метод trim удаляет лишние пробелы
+    // console.log(description.trim()) //метод trim удаляет лишние пробелы
     let error = document.querySelector(".error_container")
     if (description == "") {
         error.innerHTML = "Вы ввели пустую заметку"
@@ -40,6 +41,25 @@ function deleteNote(index) {
     printNotes()
 }
 
+function doneNote(index) {
+    notes[index].done = true
+    console.log(toDo.done)
+    saveToLocale("notes", notes)
+    printNotes()
+}
+// function fun1() {
+//     var chbox;
+//     chbox = document.getElementById('id');
+//     if (chbox.checked) {
+//         console.log("выбран");
+//     } else {
+//         console.log('Не выбран');
+//     }
+// }
+
+
+
+
 function printNotes() {
     let toDisplay = ""
     for (let i in notes) {
@@ -47,16 +67,24 @@ function printNotes() {
         if (notes[i].priority == 3) {
             priority = "High"
         } else if (notes[i].priority == 2) {
-            priority = "Middle"
+            priority = "Medium"
         } else if (notes[i].priority == 1) {
             priority = "Low"
         }
+        let checkDone = ""
+        if (notes[i].done == false) {
+            checkDone = "Не выполнено"
+        } else {
+            checkDone = "Выполнено"
+        }
+
         toDisplay +=
             `
             <div class="note">
             <div class="note_priority">
             ${priority}
             </div>
+
             <div class="edit">
                 <div class="delete">
                 <span class="material-icons">
@@ -68,23 +96,27 @@ function printNotes() {
                 done
                 </span>
                 </div>
-                <div class="not_done">
+                <div class="cancel">
                 <span class="material-icons">
                 close
                 </span>
                 </div>
-            </div>
-            <div class="note_description">   
+            </div>  
                 <div class="note_description_text">
                     ${notes[i].description}
                 </div>
+                <div class="note_description"> 
                 <div class="note_description_date">
                     ${notes[i].date}
+                </div>
+                <div class="note_description_done">
+                ${checkDone}
                 </div>
                 
             </div>
         </div>
     `
+
     }
     document.querySelector('.notes_container').innerHTML = toDisplay
     let deleteButtons = document.getElementsByClassName("delete")
@@ -93,7 +125,17 @@ function printNotes() {
             deleteNote(i)
         })
     }
+
+
+    let doneButtons = document.getElementsByClassName("done")
+    for (let i in [...doneButtons]) {
+        doneButtons[i].addEventListener("click", () => {
+            doneNote(i)
+        })
+    }
 }
+
+
 
 document.addEventListener("DOMContentLoaded", function() {
     if (getFromLocale("notes")) {
@@ -102,11 +144,19 @@ document.addEventListener("DOMContentLoaded", function() {
     printNotes()
 
 
+    // const checkbox = document.querySelector('.checkbox');
+    // checkbox.addEventListener('change', function() {
+    //     if (this.checked) {
+    //         console.log('checked');
+    //     } else console.log('unchecked');
+    // })
+
+
     document.querySelector(".addCircle").addEventListener("click", () => {
         description = document.querySelector("#description").value
         toDo.description = description.trim()
         toDo.priority = priority
-        toDo.date = Date.now()
+        toDo.date = new Date().toLocaleTimeString()
         toDo.done = false
 
         if (validate(toDo.description)) {
