@@ -66,6 +66,12 @@ html {
     transform: translateX(-100%);
 }
 
+.note_description {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+}
+
 .edit {
     top: 0;
     right: 3px;
