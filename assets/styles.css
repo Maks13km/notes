@@ -24,3 +24,66 @@ html {
     padding: 10px;
     margin: 10px;
 }
+
+.form_head {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form_head * {
+    margin: 5px;
+}
+
+.note_description {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.note_description_date {
+    font-size: 0.8em;
+    margin-top: 10px;
+}
+
+.note {
+    background-color: #e4ebf1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 14px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.note_priority {
+    position: absolute;
+    top: 0;
+    left: -10px;
+    transform: translateX(-100%);
+}
+
+.edit {
+    top: 0;
+    right: 3px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.material-icons {
+    cursor: pointer;
+}
+
+.checkbox {
+    cursor: pointer;
+}
+
+.error_container {
+    color: red;
+}
