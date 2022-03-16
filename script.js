@@ -5,6 +5,11 @@ let toDisplay = ""
 let description = ""
 let sort1 = ""
 let sort2 = ""
+let id = 0
+
+// async function getNotes() {
+//     let promis= await fetch('http://127.0.0.1:3000/items').then(res => res)
+// }
 
 function validate(description) { //функция валидации
     // console.log(description.trim()) //метод trim удаляет лишние пробелы
@@ -43,10 +48,17 @@ function deleteNote(index) {
 
 function doneNote(index) {
     notes[index].done = true
-    console.log(toDo.done)
+        // console.log(toDo.done)
     saveToLocale("notes", notes)
     printNotes()
 }
+
+// function cancelNote(index) {
+//     notes[index].classList.toggle("red")
+//     saveToLocale("notes", notes)
+//     printNotes()
+// }
+
 // function fun1() {
 //     var chbox;
 //     chbox = document.getElementById('id');
@@ -77,46 +89,78 @@ function printNotes() {
         } else {
             checkDone = "Выполнено"
         }
-
-        toDisplay +=
+        if (notes[i].done == false) {
+            toDisplay +=
+                `
+                <div class="note">
+                <div class="note_priority ${priority}">
+                    ${priority}
+                </div>
+            
+                <div class="edit">
+                    <div class="delete">
+                        <span class="material-icons">
+                    delete
+                    </span>
+                    </div>
+                    <div class="done">
+                        <span class="material-icons">
+                    done
+                    </span>
+                    </div>
+                </div>
+                <div class="note_description">
+                    <div class="note_description_text">
+                        ${notes[i].description}
+                    </div>
+            
+                    <div class="note_description_date">
+                        ${notes[i].date}
+                    </div>
+                    <div class="note_description_done">
+                        ${checkDone}
+                    </div>
+            
+                </div>
+            </div>
             `
-            <div class="note">
-            <div class="note_priority">
-            ${priority}
-            </div>
+        } else {
 
-            <div class="edit">
-                <div class="delete">
-                <span class="material-icons">
-                delete
-                </span>
+            toDisplay +=
+                `
+                <div class="note">
+                <div class="note_priority ${priority}">
+                    ${priority}
                 </div>
-                <div class="done">
-                <span class="material-icons">
-                done
-                </span>
-                </div>
-                <div class="cancel">
-                <span class="material-icons">
-                close
-                </span>
-                </div>
-            </div>  
-                <div class="note_description_text">
-                    ${notes[i].description}
-                </div>
-                <div class="note_description"> 
-                <div class="note_description_date">
-                    ${notes[i].date}
-                </div>
-                <div class="note_description_done">
-                ${checkDone}
-                </div>
-                
-            </div>
-        </div>
-    `
 
+                <div class="edit">
+                    <div class="delete">
+                        <span class="material-icons">
+                    delete
+                    </span>
+                    </div>
+                    <div class="cancel">
+                        <span class="material-icons">
+                    close
+                    </span>
+                    </div>
+                </div>
+                <div class="note_description">
+                    <div class="note_description_text">
+                        ${notes[i].description}
+                    </div>
+
+                    <div class="note_description_date">
+                        ${notes[i].date}
+                    </div>
+                    <div class="note_description_done">
+                        ${checkDone}
+                    </div>
+
+                </div>
+            </div>
+            `
+        }
     }
     document.querySelector('.notes_container').innerHTML = toDisplay
     let deleteButtons = document.getElementsByClassName("delete")
@@ -133,6 +177,14 @@ function printNotes() {
             doneNote(i)
         })
     }
+
+    // let cancelButtons = document.getElementsByClassName("cancel")
+    // for (let i in [...doneButtons]) {
+    //     cancelButtons[i].addEventListener("click", () => {
+    //         cancelNote(i)
+    //     })
+    // }
+
 }
 
 
@@ -157,7 +209,8 @@ document.addEventListener("DOMContentLoaded", function() {
         toDo.description = description.trim()
         toDo.priority = priority
         toDo.date = new Date().toLocaleTimeString()
-        toDo.done = false
+        toDo.done = false;
+        toDo.id = id + 1
 
         if (validate(toDo.description)) {
             notes.push(toDo)
