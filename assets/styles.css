@@ -93,3 +93,23 @@ html {
 .error_container {
     color: red;
 }
+
+.green {
+    background-color: rgb(123, 243, 169);
+}
+
+.red {
+    background-color: #e97373;
+}
+
+.High {
+    color: red;
+}
+
+.Medium {
+    color: rgb(214, 214, 4);
+}
+
+.Low {
+    color: rgb(24, 197, 24);
+}
