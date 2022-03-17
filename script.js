@@ -5,14 +5,44 @@ let toDisplay = ""
 let description = ""
 let sort1 = ""
 let sort2 = ""
-let id = 0
 
-// async function getNotes() {
-//     let promis= await fetch('http://127.0.0.1:3000/items').then(res => res)
+async function getNotes() {
+    let promise = await fetch('http://127.0.0.1:3000/items')
+        .then(res => res.json())
+        .then(massive => notes = massive);
+}
+
+async function postNote( note ) {
+    let promise = await fetch('http://127.0.0.1:3000/items' , {
+        method:'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(note),
+    }).then(res => console.log(res) );
+}
+
+
+async function putNote( note ) {
+    let promise = await fetch(`http://127.0.0.1:3000/items/${note.id}`, {
+        method:'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(note),
+    }).then();
+}
+
+async function deleteNote(id) {
+    // console.log(notes[i].id)
+    let promise = await fetch (`http://127.0.0.1:3000/items/${id}`,{
+        method: 'DELETE',
+
+    }).then();
+    printNotes()
+}
+
+// function deleteNote() {
+//     deleteNoteServer(toDo.id).then(result =>  getNotes().then( res => printNotes()));
 // }
 
 function validate(description) { //функция валидации
-    // console.log(description.trim()) //метод trim удаляет лишние пробелы
     let error = document.querySelector(".error_container")
     if (description == "") {
         error.innerHTML = "Вы ввели пустую заметку"
@@ -28,48 +58,21 @@ function validate(description) { //функция валидации
     return true
 }
 
-function saveToLocale(key, obj) { // сохранение в локал сторидж
-    if (obj) {
-        localStorage.setItem(key, JSON.stringify(obj))
-    } else {
-        localStorage.setItem(key, null)
-    }
+
+function doneNote(id) {
+    let note = notes.find( el => el.id === id);
+     note.done = true;
+    // saveToLocale("notes", notes)
+     putNote(note).then(result =>  getNotes().then( res => printNotes()));
 }
 
-function getFromLocale(key) { // получение из локал сториджа
-    return JSON.parse(localStorage.getItem(key))
+function cancelNote(id) {
+    let note = notes.find( el => el.id === id);
+    note.done = false;
+    // note.classList.toggle("red")
+    // saveToLocale("notes", notes)
+    putNote(note).then(result =>  getNotes().then( res => printNotes()));
 }
-
-function deleteNote(index) {
-    notes.splice(index, 1)
-    saveToLocale("notes", notes)
-    printNotes()
-}
-
-function doneNote(index) {
-    notes[index].done = true
-        // console.log(toDo.done)
-    saveToLocale("notes", notes)
-    printNotes()
-}
-
-// function cancelNote(index) {
-//     notes[index].classList.toggle("red")
-//     saveToLocale("notes", notes)
-//     printNotes()
-// }
-
-// function fun1() {
-//     var chbox;
-//     chbox = document.getElementById('id');
-//     if (chbox.checked) {
-//         console.log("выбран");
-//     } else {
-//         console.log('Не выбран');
-//     }
-// }
-
-
 
 
 function printNotes() {
@@ -99,12 +102,12 @@ function printNotes() {
             
                 <div class="edit">
                     <div class="delete">
-                        <span class="material-icons">
+                        <span class="material-icons" onclick="deleteNote(${notes[i].id})">
                     delete
                     </span>
                     </div>
                     <div class="done">
-                        <span class="material-icons">
+                        <span class="material-icons" onclick="doneNote(${notes[i].id})"> 
                     done
                     </span>
                     </div>
@@ -135,12 +138,12 @@ function printNotes() {
 
                 <div class="edit">
                     <div class="delete">
-                        <span class="material-icons">
+                        <span class="material-icons" onclick="deleteNote(${notes[i].id})">
                     delete
                     </span>
                     </div>
                     <div class="cancel">
-                        <span class="material-icons">
+                        <span class="material-icons" onclick="cancelNote(${notes[i].id})">
                     close
                     </span>
                     </div>
@@ -163,20 +166,20 @@ function printNotes() {
         }
     }
     document.querySelector('.notes_container').innerHTML = toDisplay
-    let deleteButtons = document.getElementsByClassName("delete")
-    for (let i in [...deleteButtons]) {
-        deleteButtons[i].addEventListener("click", () => {
-            deleteNote(i)
-        })
-    }
+    //let deleteButtons = document.getElementsByClassName("delete")
+    //for (let i in [...deleteButtons]) {
+       /* deleteButtons[i].addEventListener("click", () => {
+            deleteNote(toDo.id).then(result =>  getNotes().then( res => printNotes()));
+        })*/
+    // }
 
 
-    let doneButtons = document.getElementsByClassName("done")
-    for (let i in [...doneButtons]) {
-        doneButtons[i].addEventListener("click", () => {
-            doneNote(i)
-        })
-    }
+    // let doneButtons = document.getElementsByClassName("done")
+    // for (let i in [...doneButtons]) {
+    //     doneButtons[i].addEventListener("click", () => {
+    //         doneNote(toDo)
+    //     })
+    // }
 
     // let cancelButtons = document.getElementsByClassName("cancel")
     // for (let i in [...doneButtons]) {
@@ -190,9 +193,10 @@ function printNotes() {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    if (getFromLocale("notes")) {
+  /*  if (getFromLocale("notes")) {
         notes = getFromLocale("notes")
-    }
+    }*/
+    getNotes()
     printNotes()
 
 
@@ -210,15 +214,17 @@ document.addEventListener("DOMContentLoaded", function() {
         toDo.priority = priority
         toDo.date = new Date().toLocaleTimeString()
         toDo.done = false;
-        toDo.id = id + 1
+
 
         if (validate(toDo.description)) {
-            notes.push(toDo)
-            toDo = {}
+            postNote(toDo).then(result =>  getNotes().then( res => printNotes()));
+           toDo = {}
         }
         console.log(notes)
-        saveToLocale("notes", notes)
-        printNotes()
+        // saveToLocale("notes", notes)
+
+        // getNotes().then();
+
         document.querySelector("#description").value = ""
 
     })
@@ -227,5 +233,4 @@ document.addEventListener("DOMContentLoaded", function() {
             priority = e.target.value
 
         })
-        // localStorage.clear()
 })
