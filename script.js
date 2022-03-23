@@ -15,18 +15,18 @@ async function getNotes() {
         .then(massive => notes = massive);
 }
 
-async function postNote(note) {
-    let promise = await fetch('http://127.0.0.1:3000/items', {
-        method: 'POST',
+async function postNote( note ) {
+    let promise = await fetch('http://127.0.0.1:3000/items' , {
+        method:'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(note),
-    }).then(res => console.log(res));
+    }).then(res => console.log(res) );
 }
 
 
-async function putNote(note) {
+async function putNote( note ) {
     let promise = await fetch(`http://127.0.0.1:3000/items/${note.id}`, {
-        method: 'PUT',
+        method:'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(note),
     }).then();
@@ -34,16 +34,12 @@ async function putNote(note) {
 
 async function deleteNote(id) {
     // console.log(notes[i].id)
-    let promise = await fetch(`http://127.0.0.1:3000/items/${id}`, {
+    let promise = await fetch (`http://127.0.0.1:3000/items/${id}`,{
         method: 'DELETE',
 
-    }).then();
-    printNotes()
+    }).then(res => printNotes() );
 }
 
-// function deleteNote() {
-//     deleteNoteServer(toDo.id).then(result =>  getNotes().then( res => printNotes()));
-// }
 
 function validate(description) { //функция валидации
     let error = document.querySelector(".error_container")
@@ -63,22 +59,22 @@ function validate(description) { //функция валидации
 
 
 function doneNote(id) {
-    let note = notes.find(el => el.id === id);
-    note.done = true;
-    putNote(note).then(result => getNotes().then(res => printNotes()));
+    let note = notes.find( el => el.id === id);
+     note.done = true;
+     putNote(note).then(result =>  getNotes().then( res => printNotes()));
 }
 
 function cancelNote(id) {
-    let note = notes.find(el => el.id === id);
+    let note = notes.find( el => el.id === id);
     note.done = false;
-    // note.classList.toggle("red")
-    // saveToLocale("notes", notes)
-    putNote(note).then(result => getNotes().then(res => printNotes()));
+    putNote(note).then(result =>  getNotes().then( res => printNotes()));
 }
 
 
 function printNotes() {
     let toDisplay = ""
+    let changeIcon = ""
+    let colorNote = ""
     for (let i in notes) {
         let priority = ""
         if (notes[i].priority == 3) {
@@ -95,77 +91,62 @@ function printNotes() {
             checkDone = "Выполнено"
         }
         if (notes[i].done == false) {
-            toDisplay +=
+            changeIcon =
                 `
-                <div class="note">
-                <div class="note_priority ${priority}">
-                    ${priority}
+                <div class="done">
+                     <span class="material-icons" onclick="doneNote(${notes[i].id})"> 
+                         done
+                     </span>
                 </div>
-            
-                <div class="edit">
-                    <div class="delete">
-                        <span class="material-icons" onclick="deleteNote(${notes[i].id})">
-                    delete
-                    </span>
-                    </div>
-                    <div class="done">
-                        <span class="material-icons" onclick="doneNote(${notes[i].id})"> 
-                    done
-                    </span>
-                    </div>
-                </div>
-                <div class="note_description">
-                    <div class="note_description_text">
-                        ${notes[i].description}
-                    </div>
-            
-                    <div class="note_description_date">
-                        ${notes[i].date}
-                    </div>
-                    <div class="note_description_done">
-                        ${checkDone}
-                    </div>
-            
-                </div>
-            </div>
-            `
-        } else {
-
-            toDisplay +=
                 `
-                <div class="note">
-                <div class="note_priority ${priority}">
-                    ${priority}
-                </div>
-                <div class="edit">
-                    <div class="delete">
-                        <span class="material-icons" onclick="deleteNote(${notes[i].id})">
-                    delete
-                    </span>
-                    </div>
-                    <div class="cancel">
-                        <span class="material-icons" onclick="cancelNote(${notes[i].id})">
+            colorNote =
+                `<div class="note" >
+                `
+        }else {
+            changeIcon =
+                `
+<!--            <div class="cancel">-->
+                <span class="material-icons" onclick="cancelNote(${notes[i].id})">
                     close
+                </span>
+<!--            </div>-->
+            `
+            colorNote =
+                `<div class="note green" >
+                `
+        }
+            toDisplay +=
+                `
+                ${colorNote}
+                <div class="note_priority ${priority}">
+                    ${priority}
+                </div>
+            
+                <div class="edit">
+                    <div class="delete">
+                        <span class="material-icons" onclick="deleteNote(${notes[i].id})" >
+                    delete
                     </span>
                     </div>
+                   ${changeIcon}
                 </div>
                 <div class="note_description">
                     <div class="note_description_text">
                         ${notes[i].description}
                     </div>
+            
                     <div class="note_description_date">
                         ${notes[i].date}
                     </div>
                     <div class="note_description_done">
                         ${checkDone}
                     </div>
+            
                 </div>
             </div>
             `
-        }
     }
     document.querySelector('.notes_container').innerHTML = toDisplay
-
 }
 
 function changePriority() {
@@ -181,14 +162,17 @@ function changePriority() {
 function filtration() {
     let filteredNotes = [...notes]
     filteredNotes = filteredNotes.filter((item) => {
-        if (item.done != filter.completed) {
-            if (filter.priority.length == 0) return item;
-            if (filter.priority.includes(item.priority)) {
+        if (item.done === filter.completed) {
+            if (filter.priority.length == 0) {
+                return item;
+            }
+            else if (filter.priority.includes(item.priority)) {
                 return item
             }
 
         }
     })
+
     console.log("фильтрованные заметки ", filteredNotes, "нефильтрованные", notes)
 }
 
@@ -205,18 +189,10 @@ for (let i of priorities) {
     }
 }
 
-
 document.addEventListener("DOMContentLoaded", function() {
-    getNotes()
-    printNotes()
+    getNotes().then( res => printNotes())
 
 
-    // const checkbox = document.querySelector('.checkbox');
-    // checkbox.addEventListener('change', function() {
-    //     if (this.checked) {
-    //         console.log('checked');
-    //     } else console.log('unchecked');
-    // })
 
 
     document.querySelector(".addCircle").addEventListener("click", () => {
@@ -228,11 +204,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
         if (validate(toDo.description)) {
-            postNote(toDo).then(result => getNotes().then(res => printNotes()));
-            toDo = {}
+            postNote(toDo).then(result =>  getNotes().then( res => printNotes()));
+           toDo = {}
         }
         console.log(notes)
-            // saveToLocale("notes", notes)
+        // saveToLocale("notes", notes)
 
         // getNotes().then();
 
@@ -241,7 +217,7 @@ document.addEventListener("DOMContentLoaded", function() {
     })
 
     document.querySelector(".priority").addEventListener("change", (e) => {
-        priority = e.target.value
+            priority = e.target.value
 
-    })
+        })
 })
