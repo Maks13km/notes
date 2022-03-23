@@ -3,8 +3,11 @@ let toDo = {}
 let priority = "3"
 let toDisplay = ""
 let description = ""
-let sort1 = ""
-let sort2 = ""
+let filter = {
+    completed: false,
+    priority: [],
+}
+let filteredNotes = []
 
 async function getNotes() {
     let promise = await fetch('http://127.0.0.1:3000/items')
@@ -12,18 +15,18 @@ async function getNotes() {
         .then(massive => notes = massive);
 }
 
-async function postNote( note ) {
-    let promise = await fetch('http://127.0.0.1:3000/items' , {
-        method:'POST',
+async function postNote(note) {
+    let promise = await fetch('http://127.0.0.1:3000/items', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(note),
-    }).then(res => console.log(res) );
+    }).then(res => console.log(res));
 }
 
 
-async function putNote( note ) {
+async function putNote(note) {
     let promise = await fetch(`http://127.0.0.1:3000/items/${note.id}`, {
-        method:'PUT',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(note),
     }).then();
@@ -31,7 +34,7 @@ async function putNote( note ) {
 
 async function deleteNote(id) {
     // console.log(notes[i].id)
-    let promise = await fetch (`http://127.0.0.1:3000/items/${id}`,{
+    let promise = await fetch(`http://127.0.0.1:3000/items/${id}`, {
         method: 'DELETE',
 
     }).then();
@@ -60,18 +63,17 @@ function validate(description) { //функция валидации
 
 
 function doneNote(id) {
-    let note = notes.find( el => el.id === id);
-     note.done = true;
-    // saveToLocale("notes", notes)
-     putNote(note).then(result =>  getNotes().then( res => printNotes()));
+    let note = notes.find(el => el.id === id);
+    note.done = true;
+    putNote(note).then(result => getNotes().then(res => printNotes()));
 }
 
 function cancelNote(id) {
-    let note = notes.find( el => el.id === id);
+    let note = notes.find(el => el.id === id);
     note.done = false;
     // note.classList.toggle("red")
     // saveToLocale("notes", notes)
-    putNote(note).then(result =>  getNotes().then( res => printNotes()));
+    putNote(note).then(result => getNotes().then(res => printNotes()));
 }
 
 
@@ -135,7 +137,6 @@ function printNotes() {
                 <div class="note_priority ${priority}">
                     ${priority}
                 </div>
-
                 <div class="edit">
                     <div class="delete">
                         <span class="material-icons" onclick="deleteNote(${notes[i].id})">
@@ -152,50 +153,60 @@ function printNotes() {
                     <div class="note_description_text">
                         ${notes[i].description}
                     </div>
-
                     <div class="note_description_date">
                         ${notes[i].date}
                     </div>
                     <div class="note_description_done">
                         ${checkDone}
                     </div>
-
                 </div>
             </div>
             `
         }
     }
     document.querySelector('.notes_container').innerHTML = toDisplay
-    //let deleteButtons = document.getElementsByClassName("delete")
-    //for (let i in [...deleteButtons]) {
-       /* deleteButtons[i].addEventListener("click", () => {
-            deleteNote(toDo.id).then(result =>  getNotes().then( res => printNotes()));
-        })*/
-    // }
-
-
-    // let doneButtons = document.getElementsByClassName("done")
-    // for (let i in [...doneButtons]) {
-    //     doneButtons[i].addEventListener("click", () => {
-    //         doneNote(toDo)
-    //     })
-    // }
-
-    // let cancelButtons = document.getElementsByClassName("cancel")
-    // for (let i in [...doneButtons]) {
-    //     cancelButtons[i].addEventListener("click", () => {
-    //         cancelNote(i)
-    //     })
-    // }
 
 }
 
+function changePriority() {
+    filter.priority = []
+    for (let j of priorities) {
+        if (j.checked) {
+            filter.priority.push(j.value)
+        }
+    }
+    filtration()
+}
+
+function filtration() {
+    let filteredNotes = [...notes]
+    filteredNotes = filteredNotes.filter((item) => {
+        if (item.done != filter.completed) {
+            if (filter.priority.length == 0) return item;
+            if (filter.priority.includes(item.priority)) {
+                return item
+            }
+
+        }
+    })
+    console.log("фильтрованные заметки ", filteredNotes, "нефильтрованные", notes)
+}
+
+
+document.querySelector("#done").onchange = function() {
+    filter.completed = this.checked;
+    filtration()
+}
+
+let priorities = document.querySelectorAll(".filter_priority")
+for (let i of priorities) {
+    i.onchange = function() {
+        changePriority()
+    }
+}
 
 
 document.addEventListener("DOMContentLoaded", function() {
-  /*  if (getFromLocale("notes")) {
-        notes = getFromLocale("notes")
-    }*/
     getNotes()
     printNotes()
 
@@ -217,11 +228,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
         if (validate(toDo.description)) {
-            postNote(toDo).then(result =>  getNotes().then( res => printNotes()));
-           toDo = {}
+            postNote(toDo).then(result => getNotes().then(res => printNotes()));
+            toDo = {}
         }
         console.log(notes)
-        // saveToLocale("notes", notes)
+            // saveToLocale("notes", notes)
 
         // getNotes().then();
 
@@ -230,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function() {
     })
 
     document.querySelector(".priority").addEventListener("change", (e) => {
-            priority = e.target.value
+        priority = e.target.value
 
-        })
+    })
 })
