@@ -1,13 +1,13 @@
 let notes = []
 let toDo = {}
 let priority = "3"
-let toDisplay = ""
+//let toDisplay = ""
 let description = ""
 let filter = {
     completed: false,
     priority: [],
 }
-let filteredNotes = []
+
 
 async function getNotes() {
     let promise = await fetch('http://127.0.0.1:3000/items')
@@ -35,11 +35,11 @@ async function putNote( note ) {
 async function deleteNote(id) {
     let promise = await fetch (`http://127.0.0.1:3000/items/${id}`,{
         method: 'DELETE',
-    }).then(res => getNotes().then(res => printNotes() ));
+    }).then(res => getNotes().then(res => printNotes(notes) ));
 }
 
 function validate(description) { //функция валидации
-    let error = document.querySelector(".error_container")
+    error = document.querySelector(".error_container")
     if (description == "") {
         error.innerHTML = "Вы ввели пустую заметку"
         return false
@@ -55,56 +55,50 @@ function validate(description) { //функция валидации
 }
 
 function editNote(id) {
-    let note = notes.find(el => el.id === id);
-    let edit =
-        `
-        <input id="edit"/>
-        `
-    document.querySelector("#edit").value = note.description;
-   // document.querySelector(".addCircle").addEventListener("click", () => {
-    description = document.querySelector("#description").value
-    note.id.description = description.trim()
-    //     console.log(note)
-         putNote(note).then(result =>  getNotes().then( res => printNotes()));
+     let note = notes.find(el => el.id === id);
+     note.description = document.getElementById(`note_description_${id}`).value
+    console.log(note.description)
+    putNote(note).then(result =>  getNotes().then( res => printNotes(notes)))
 }
 
 
 function doneNote(id) {
     let note = notes.find( el => el.id === id);
      note.done = true;
-     putNote(note).then(result =>  getNotes().then( res => printNotes()));
+     putNote(note).then(result =>  getNotes().then( res => printNotes(notes)));
 }
 
 function cancelNote(id) {
     let note = notes.find( el => el.id === id);
     note.done = false;
-    putNote(note).then(result =>  getNotes().then( res => printNotes()));
+    putNote(note).then(result =>  getNotes().then( res => printNotes(notes)));
 }
 
-function printNotes() {
+function printNotes(mas) {
     let toDisplay = ""
     let changeIcon = ""
     let colorNote = ""
-    for (let i in notes) {
+    for (let item of mas) {
+   
         let priority = ""
-        if (notes[i].priority == 3) {
+        if (item.priority == 3) {
             priority = "High"
-        } else if (notes[i].priority == 2) {
+        } else if (item.priority == 2) {
             priority = "Medium"
-        } else if (notes[i].priority == 1) {
+        } else if (item.priority == 1) {
             priority = "Low"
         }
         let checkDone = ""
-        if (notes[i].done == false) {
+        if (item.done == false) {
             checkDone = "Не выполнено"
         } else {
             checkDone = "Выполнено"
         }
-        if (notes[i].done == false) {
+        if (item.done == false) {
             changeIcon =
                 `
                 <div class="done">
-                     <span class="material-icons" onclick="doneNote(${notes[i].id})">
+                     <span class="material-icons" onclick="doneNote(${item.id})">
                          done
                      </span>
                 </div>
@@ -116,7 +110,7 @@ function printNotes() {
             changeIcon =
                 `
             <div class="cancel">
-                <span class="material-icons" onclick="cancelNote(${notes[i].id})">
+                <span class="material-icons" onclick="cancelNote(${item.id})">
                     close
                 </span>
             </div>
@@ -134,22 +128,18 @@ function printNotes() {
 
                     <div class="edit">
                         <div class="delete">
-                            <span class="material-icons" onclick="deleteNote(${notes[i].id})" >
+                            <span class="material-icons" onclick="deleteNote(${item.id})" >
                             delete
                         </span>
                         </div>
                        ${changeIcon}
-                       <span class="material-icons" onclick="editNote(${notes[i].id})">
-                            edit
-                       </span>
                     </div>
                     <div class="note_description">
-                        <div class="note_description_text">
-                            ${notes[i].description}
-                        </div>
-
+                        <textarea class="note_description_text" id="note_description_${item.id}" onblur = "editNote(${item.id})" >
+                            ${item.description}
+                        </textarea>
                         <div class="note_description_date">
-                            ${notes[i].date}
+                            ${item.date}
                         </div>
                         <div class="note_description_done">
                             ${checkDone}
@@ -162,6 +152,15 @@ function printNotes() {
     }
 }
 
+
+    function resetCheckbox() {
+        let uncheck=document.querySelectorAll('.checkbox');
+        for(let i=0;i<uncheck.length;i++) {
+            if(uncheck[i].type=='checkbox') {
+                uncheck[i].checked=false;
+            }
+        }
+    }
 
     function changePriority() {
         filter.priority = []
@@ -182,18 +181,33 @@ function printNotes() {
                 } else if (filter.priority.includes(item.priority)) {
                     return item
                 }
-
             }
         })
-        // printSortedNotes()
+        document.querySelector(".date").onclick = function () {
+            filteredNotes.reverse();
+            printNotes(filteredNotes)
+        }
+        printNotes(filteredNotes)
         console.log("фильтрованные заметки ", filteredNotes, "нефильтрованные", notes)
     }
 
+      document.querySelector(".date").onclick = function () {
+          notes.reverse();
+          printNotes(notes)
+      }
 
     document.querySelector("#done").onchange = function () {
         filter.completed = this.checked;
         filtration()
     }
+
+
+    document.querySelector("#all").onclick = function() {
+        console.log( "нефильтрованные ", notes)
+        printNotes(notes)
+        resetCheckbox()
+    }
+
 
     let priorities = document.querySelectorAll(".filter_priority")
     for (let i of priorities) {
@@ -201,9 +215,8 @@ function printNotes() {
             changePriority()
         }
     }
-
     document.addEventListener("DOMContentLoaded", function () {
-        getNotes().then(res => printNotes())
+        getNotes().then(res => printNotes(notes))
 
 
         document.querySelector(".addCircle").addEventListener("click", () => {
@@ -213,7 +226,7 @@ function printNotes() {
             toDo.date = new Date().toLocaleTimeString()
             toDo.done = false;
             if (validate(toDo.description)) {
-                postNote(toDo).then(result => getNotes().then(res => printNotes()));
+                postNote(toDo).then(result => getNotes().then(res => printNotes(notes)));
                 toDo = {}
             }
             // console.log(notes)
